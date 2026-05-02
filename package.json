@@ -1,0 +1,35 @@
+{
+  "name": "trustpilot-scraper",
+  "version": "1.0.0",
+  "description": "Production-grade Trustpilot 1M+ page scraper",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "apify-client": "^2.9.5",
+    "axios": "^1.7.2",
+    "better-sqlite3": "^11.1.2",
+    "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
+    "csv-stringify": "^6.5.1",
+    "dotenv": "^16.4.5",
+    "p-queue": "^8.0.1",
+    "pino": "^9.3.1",
+    "pino-pretty": "^11.2.1",
+    "pino-roll": "^4.0.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "undici": "^6.19.2"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^20.14.11",
+    "vitest": "^2.0.3"
+  }
+}

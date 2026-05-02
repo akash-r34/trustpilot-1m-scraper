@@ -1,0 +1,14 @@
+node_modules/
+dist/
+data/
+output/
+logs/
+.env
+*.db
+*.db-shm
+*.db-wal
+proxy-quarantine.json
+
+.DS_Store
+*.pdf
+trusttpilot_scraper_plan_v2.md
