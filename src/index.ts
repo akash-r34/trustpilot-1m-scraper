@@ -10,6 +10,7 @@ import { runEmailWorkersTier1, runEmailWorkersTier2, runEmailWorkersTier3 } from
 import { retryCaptchaWithApify } from './anti-bot/apify-fallback.js';
 import { exportCsv } from './storage/csv-export.js';
 import { logger } from './utils/logger.js';
+import { logRobotsAtStartup } from './anti-bot/robots.js';
 
 const program = new Command();
 
@@ -36,6 +37,7 @@ program
   .option('--verbose', 'Debug logging')
   .action(async (opts) => {
     applyGlobalFlags(opts);
+    await logRobotsAtStartup().catch(() => {});
     const urlStore = new UrlStore();
 
     logger.info('=== Phase 1: URL Discovery ===');
@@ -66,6 +68,7 @@ program
   .option('--proxy-file <path>', 'Proxy list file')
   .action(async (opts) => {
     applyGlobalFlags(opts);
+    await logRobotsAtStartup().catch(() => {});
     const urlStore = new UrlStore();
 
     const stale = resetStaleScraping();
@@ -92,6 +95,7 @@ program
   .option('--verbose', 'Debug logging')
   .action(async (opts) => {
     applyGlobalFlags(opts);
+    await logRobotsAtStartup().catch(() => {});
     const limit = opts['limit'] ? parseInt(opts['limit'], 10) : undefined;
     const tier = opts['tier'] ? parseInt(opts['tier'], 10) : null;
 
@@ -120,6 +124,7 @@ program
   .option('--verbose', 'Debug logging')
   .action(async (opts) => {
     applyGlobalFlags(opts);
+    await logRobotsAtStartup().catch(() => {});
     logger.info('=== Phase 5: CSV Export ===');
     await exportCsv(opts['output']);
   });
@@ -142,6 +147,7 @@ program
   .option('--concurrency <n>', 'Worker concurrency', '5')
   .action(async (opts) => {
     applyGlobalFlags(opts);
+    await logRobotsAtStartup().catch(() => {});
     const urlStore = new UrlStore();
 
     if (opts['apify']) {
@@ -184,6 +190,7 @@ program
   .option('--verbose', 'Debug logging')
   .action(async (opts) => {
     applyGlobalFlags(opts);
+    await logRobotsAtStartup().catch(() => {});
     const urlStore = new UrlStore();
     const limit = opts['limit'] ? parseInt(opts['limit'], 10) : undefined;
 

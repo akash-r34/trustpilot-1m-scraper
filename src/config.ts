@@ -43,6 +43,7 @@ export const config = {
   get useFirecrawlEmails() { return envBool('USE_FIRECRAWL_EMAILS', false); },
   get useApifyFallback() { return envBool('USE_APIFY_FALLBACK', false); },
   get useApifyEmails() { return envBool('USE_APIFY_EMAILS', false); },
+  get respectRobots() { return envBool('RESPECT_ROBOTS', false); },
   get logLevel() { return envStr('LOG_LEVEL', 'info'); },
   get outputFile() { return path.join(envStr('OUTPUT_DIR', 'output'), 'trustpilot_results.csv'); },
 };

@@ -1,6 +1,8 @@
 import Database from 'better-sqlite3';
 import { getDb } from '../storage/db.js';
 import { config } from '../config.js';
+import { getCachedRules, isDisallowed } from '../anti-bot/robots.js';
+import { logger } from '../utils/logger.js';
 import type { UrlRecord, ScrapeStats } from '../storage/models.js';
 
 export class UrlStore {
@@ -58,6 +60,21 @@ export class UrlStore {
   }
 
   insertBatch(entries: Array<{ slug: string; url: string }>): number {
+    if (config.respectRobots) {
+      const rules = getCachedRules();
+      if (rules && rules.disallow.length > 0) {
+        const before = entries.length;
+        entries = entries.filter(({ url }) => {
+          try {
+            return !isDisallowed(new URL(url).pathname, rules);
+          } catch {
+            return true;
+          }
+        });
+        const skipped = before - entries.length;
+        if (skipped > 0) logger.warn({ skipped }, 'Skipped URLs blocked by robots.txt (RESPECT_ROBOTS=true)');
+      }
+    }
     const db = getDb();
     const insert = db.prepare(`INSERT OR IGNORE INTO urls (slug, trustpilot_url) VALUES (?, ?)`);
     const tx = db.transaction((rows: typeof entries) => {

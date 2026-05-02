@@ -1,10 +1,11 @@
 import { gunzipSync } from 'zlib';
 import * as cheerio from 'cheerio';
-import { fetchDirect, fetchPageBuffer } from '../scraper/request.js';
+import { fetchPageBuffer } from '../scraper/request.js';
 import { UrlStore } from './url-store.js';
 import { normalizeUrl, slugFromUrl } from '../utils/validators.js';
 import { withRetry } from '../utils/retry.js';
 import { logger } from '../utils/logger.js';
+import { loadRobots } from '../anti-bot/robots.js';
 
 // Accepts www.trustpilot.com and locale-prefixed variants (uk.trustpilot.com, de.trustpilot.com)
 // Also allows locale path prefix (/uk/review/, /de/review/)
@@ -49,17 +50,8 @@ async function parseSitemapUrls(xml: string): Promise<string[]> {
 }
 
 async function getRootSitemapUrl(): Promise<string> {
-  try {
-    // Use fetchDirect — no proxy or rate-limiting needed for robots.txt
-    const { html } = await fetchDirect('https://www.trustpilot.com/robots.txt');
-    for (const line of html.split('\n')) {
-      const m = line.match(/^Sitemap:\s*(.+)$/i);
-      if (m) return m[1]!.trim();
-    }
-  } catch (err) {
-    logger.warn({ err: String(err) }, 'Could not fetch robots.txt');
-  }
-  return 'https://www.trustpilot.com/sitemap_index.xml';
+  const rules = await loadRobots();
+  return rules.sitemap ?? 'https://www.trustpilot.com/sitemap_index.xml';
 }
 
 export async function discoverFromSitemap(urlStore: UrlStore): Promise<number> {
